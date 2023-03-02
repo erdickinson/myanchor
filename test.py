@@ -4,11 +4,13 @@ import time
 
 ser = serial.Serial('/dev/ttyACM0', 9600,timeout=1)
 
-def send_to_arduino(value):
-    checksum = sum(map(ord, value)) % 256
-    message = "{}{:02X}\n".format(value, checksum)
+def send_to_arduino(speed):
+    speed_str = "S{:03d}".format(speed) # convert the speed to a 3-digit string
+    checksum = sum(map(ord, speed_str)) % 256
+    message = "{}{:02X}\n".format(speed_str, checksum)
     ser.write(message.encode())
-    print("Sent value: {}".format(value))
+    print("Sent value: {}".format(speed_str))
+
 
 myanchor = Flask(__name__)
 
