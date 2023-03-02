@@ -18,8 +18,7 @@ def index():
         if request.form.get('speed') is not None:
             speed = int(request.form.get('speed'))
             send_to_arduino("S{:03d}".format(speed))
-            print("Speed set to: {}".format(speed))
-            return "OK"
+            print("Speed value:", speed)
 
     return """
     <html>
@@ -27,20 +26,20 @@ def index():
             <h1>DC Motor Controller</h1>
             <form id="motor-form" method="POST">
                 <label>Speed:</label>
-                <div id="speed-value"></div>
                 <input type="range" min="0" max="255" value="0" class="slider" name="speed">
+                <br>
+                <span id="speed-value">0</span>
             </form>
             <script>
                 var form = document.getElementById("motor-form");
                 var slider = document.querySelector(".slider");
                 var speedValue = document.getElementById("speed-value");
-                speedValue.innerHTML = "Current Speed: " + slider.value;
                 form.addEventListener("input", function() {
                     var xhttp = new XMLHttpRequest();
                     xhttp.open("POST", "/", true);
                     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                     xhttp.send(new FormData(form));
-                    speedValue.innerHTML = "Current Speed: " + slider.value;
+                    speedValue.textContent = slider.value;
                 });
             </script>
         </body>
