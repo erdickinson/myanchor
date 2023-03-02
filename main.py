@@ -1,7 +1,7 @@
 from flask import Flask, request
 import serial
 
-ser = serial.Serial('/dev/ttyACM1', 9600)
+ser = serial.Serial('/dev/ttyACM0', 9600)
 
 def send_to_arduino(value):
     checksum = sum(map(ord, value)) % 256
