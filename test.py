@@ -2,7 +2,7 @@ from flask import Flask, request
 import serial
 import time
 
-ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+ser = serial.Serial('/dev/ttyACM0', 9600,timeout=1)
 
 def send_to_arduino(value):
     checksum = sum(map(ord, value)) % 256
@@ -18,7 +18,7 @@ def index():
         if request.form.get('speed') is not None:
             speed = int(request.form.get('speed'))
             send_to_arduino("S{:03d}".format(speed))
-            print("Speed value: {}".format(speed))
+            print("Received speed value: {}".format(speed))
 
     return """
     <html>
@@ -41,6 +41,7 @@ def index():
         </body>
     </html>
     """
+
 
 if __name__ == "__main__":
     myanchor.run(host="0.0.0.0")
