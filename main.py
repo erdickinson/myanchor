@@ -7,6 +7,7 @@ def send_to_arduino(value):
     checksum = sum(map(ord, value)) % 256
     message = "{}{:02X}\n".format(value, checksum)
     ser.write(message.encode())
+    print("Sent value: {}".format(value))
 
 myanchor = Flask(__name__)
 
