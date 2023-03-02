@@ -1,17 +1,12 @@
 from flask import Flask, request
-
 import serial
 
 ser = serial.Serial('/dev/ttyACM1', 9600)
-
 
 def send_to_arduino(value):
     checksum = sum(map(ord, value)) % 256
     message = "{}{:02X}\n".format(value, checksum)
     ser.write(message.encode())
-
-# Example usage:
-send_to_arduino("F50")  # send "F50" with checksum
 
 myanchor = Flask(__name__)
 
@@ -19,14 +14,14 @@ myanchor = Flask(__name__)
 def index():
     if request.method == 'POST':
         if request.form.get('direction') == 'forward':
-            ser.write(b'F')
+            send_to_arduino("F00")
         elif request.form.get('direction') == 'reverse':
-            ser.write(b'R')
+            send_to_arduino("R00")
         elif request.form.get('direction') == 'off':
-            ser.write(b'O')
+            send_to_arduino("O00")
         elif request.form.get('speed') is not None:
             speed = int(request.form.get('speed'))
-            ser.write(str(speed).encode())
+            send_to_arduino("S{:03d}".format(speed))
 
     return """
     <html>
@@ -39,7 +34,7 @@ def index():
                 <input type="radio" name="direction" value="off"> Off
                 <br>
                 <label>Speed:</label>
-                <input type="range" min="0" max="510" value="0" class="slider" name="speed">
+                <input type="range" min="0" max="255" value="0" class="slider" name="speed">
             </form>
             <script>
                 var form = document.getElementById("motor-form");
@@ -55,14 +50,6 @@ def index():
     </html>
     """
 
-
-@myanchor.route("/send/<int:value>")
-def send(value):
-    send_to_arduino(str(value))
-    return "Sent value {}".format(value)
-
-def send_to_arduino(value):
-    ser.write(value.encode())
 
 if __name__ == "__main__":
     myanchor.run(host="0.0.0.0")
