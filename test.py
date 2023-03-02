@@ -18,8 +18,11 @@ def index():
         if request.form.get('speed') is not None:
             speed = int(request.form.get('speed'))
             send_to_arduino("S{:03d}".format(speed))
-            print("Speed value:", speed)
 
+    # Counter functionality
+    counter = int(time.time() % 100)
+    send_to_arduino("C{:03d}".format(counter))
+    
     return """
     <html>
         <body>
@@ -27,24 +30,27 @@ def index():
             <form id="motor-form" method="POST">
                 <label>Speed:</label>
                 <input type="range" min="0" max="255" value="0" class="slider" name="speed">
-                <br>
-                <span id="speed-value">0</span>
             </form>
+            <div id="counter">Counter: {}</div>
             <script>
                 var form = document.getElementById("motor-form");
                 var slider = document.querySelector(".slider");
-                var speedValue = document.getElementById("speed-value");
                 form.addEventListener("input", function() {
                     var xhttp = new XMLHttpRequest();
                     xhttp.open("POST", "/", true);
                     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                     xhttp.send(new FormData(form));
-                    speedValue.textContent = slider.value;
                 });
+
+                setInterval(function() {{
+                    var counterDiv = document.getElementById("counter");
+                    counterDiv.innerHTML = "Counter: " + parseInt(counterDiv.innerHTML.split(":")[1].trim()) + 1;
+                }}, 1000);
             </script>
         </body>
     </html>
-    """
+    """.format(counter)
+
 
 if __name__ == "__main__":
     myanchor.run(host="0.0.0.0")
