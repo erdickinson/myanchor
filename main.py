@@ -4,6 +4,15 @@ import serial
 
 ser = serial.Serial('/dev/ttyACM0', 9600)
 
+
+def send_to_arduino(value):
+    checksum = sum(map(ord, value)) % 256
+    message = "{}{:02X}\n".format(value, checksum)
+    ser.write(message.encode())
+
+# Example usage:
+send_to_arduino("F50")  # send "F50" with checksum
+
 myanchor = Flask(__name__)
 
 @myanchor.route("/", methods=['GET', 'POST'])
