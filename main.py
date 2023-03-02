@@ -12,17 +12,11 @@ def index():
     <html>
         <body>
             <h1>DC Motor Controller</h1>
-            <input type="range" min="0" max="255" value="0" class="slider" id="myRange">
-            <button onclick="send()">Send</button>
+            <input type="range" min="0" max="255" value="0" class="slider" id="myRange" oninput="send()">
             <script>
                 function send() {
                     var sliderValue = document.getElementById("myRange").value;
                     var xhttp = new XMLHttpRequest();
-                    xhttp.onreadystatechange = function() {
-                        if (this.readyState == 4 && this.status == 200) {
-                            console.log(this.responseText);
-                        }
-                    };
                     xhttp.open("GET", "/send/" + sliderValue, true);
                     xhttp.send();
                 }
