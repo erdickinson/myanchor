@@ -30,7 +30,7 @@ def index():
                 <input type="radio" name="direction" value="off"> Off
                 <br>
                 <label>Speed:</label>
-                <input type="range" min="0" max="255" value="0" class="slider" name="speed">
+                <input type="range" min="0" max="510" value="0" class="slider" name="speed">
             </form>
             <script>
                 var form = document.getElementById("motor-form");
